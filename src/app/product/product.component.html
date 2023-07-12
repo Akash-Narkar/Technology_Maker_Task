@@ -1,0 +1,105 @@
+<div>
+    <h2>Product List</h2>
+
+    <input type="text" [(ngModel)]="searchKeyword" (input)="searchProducts()" placeholder="Search by title" />
+    <br>
+    <br>
+    <table class="product-table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Title</th>
+                <th>Price</th>
+                <th>Description</th>
+                <th>Category</th>
+                <th>Image</th>
+                <th>Rating</th>
+                <th>Option</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr
+                *ngFor="let product of products | paginate: { itemsPerPage: itemsPerPage, currentPage: currentPage, id: 'productsPagination' }">
+                <ng-container *ngIf="editedProductId !== product.id">
+                    <td>{{product.id}}</td>
+                    <td>{{ product.title }}</td>
+                    <td>{{ product.price }}</td>
+                    <td>{{ product.description }}</td>
+                    <th>mens's clothing</th>
+
+                    <td><img [src]="product.image" [alt]="product.title" class="img-fluid" style="max-width: 100%;
+height: auto;" /></td>
+                    <td>
+                        <table>
+                            <tr>
+                                <th>Rate</th>
+                                <td>{{product.rating.rate}}</td>
+                            </tr>
+                            <tr>
+                                <th>Count</th>
+                                <td>{{product.rating.count}}</td>
+                            </tr>
+                        </table>
+
+                    <td>
+                        <button (click)="updateProduct(product)">Update</button>
+                        <br>
+                        <br>
+                        <button (click)="deleteProduct(product.id)">Delete</button>
+
+                    </td>
+                </ng-container>
+                <ng-container *ngIf="editedProductId === product.id">
+                    <td><input type="text" style="font-size: large;" [(ngModel)]="product.id" /></td>
+                    <td><input type="text" [(ngModel)]="product.title" /></td>
+                    <td><input type="text" [(ngModel)]="product.price" /></td>
+                    <td><input type="textarea" row="10" col="50" [(ngModel)]="product.description" /></td>
+                    <td><input type="text" [(ngModel)]="product.Category" /></td>
+                    <td>
+                        <label>Image:</label>
+                        <input type="file" (change)="onFileChange($event)" accept="image/"
+                            [(ngModel)]="product.image" />
+                    </td>
+                    <td><input type="text" [(ngModel)]="product.rating.rate" />
+                        <input type="text" [(ngModel)]="product.rating.count" />
+                    </td>
+                    <td>
+                        <button (click)="saveProductChanges(product)" class="btn-btn-primary">Save</button>
+                        <button (click)="cancelProductChanges()" class="btn-btn-danger">Cancel</button>
+                    </td>
+                </ng-container>
+            </tr>
+        </tbody>
+    </table>
+    <br>
+    <button (click)="addProduct()" *ngIf="!isAddingProduct" class="btn btn-primary">Add Product</button>
+    <div *ngIf="isAddingProduct">
+        <h3>Add New Product</h3>
+        <label>Title:</label>
+        <input type="text" [(ngModel)]="newProduct.title" class="form-control" />
+        <br>
+        <label>Price:</label>
+        <input type="text" [(ngModel)]="newProduct.price" class="form-control" />
+        <br>
+        <label>Description:</label>
+        <input type="text" [(ngModel)]="newProduct.description" class="form-control" />
+        <br>
+        <label>catogory:</label>
+        <input type="text" [(ngModel)]="newProduct.catogory" class="form-control" />
+        <br>
+        <label>Image:</label>
+        <input type="file" (change)="onFileChange($event)" accept="image/*" class="form-control" />
+        <br>
+        <label>rate:</label>
+        <input type="number" [(ngModel)]="newProduct.rate" class="form-control" />
+        <br>
+        <label>Count:</label>
+        <input type="number" [(ngModel)]="newProduct.count" class="form-control" />
+        <br>
+        <button (click)="saveProduct()" [disabled]="!newProduct.title || !newProduct.image"
+            class="btn btn-primary">Save</button>
+        <button (click)="isAddingProduct = false" class="btn btn-danger">Cancel</button>
+    </div>
+    <pagination-controls (pageChange)="currentPage = $event" id="productsPagination"
+        style="text-align: center;"></pagination-controls>
+</div>
